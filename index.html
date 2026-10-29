@@ -524,6 +524,21 @@
     .campo { gap: 3px; }
     .campo label { font-size: 11.5px; }
     .subblocos-grid { margin-top: 8px; gap: 8px 10px; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    html, body { min-width: 740px; }
+    .folha { min-width: 740px; }
+    body { font-size: 11px; }
+    .cabecalho-linha { flex-direction: row; align-items: center; justify-content: space-between; }
+    .cabecalho-topo { gap: 10px; }
+    .cabecalho-texto h1 { font-size: 16px; }
+    .secao-cabecalho h2 { font-size: 14px; }
+    .secao-numero { width: 24px; height: 24px; font-size: 12px; }
+    .campo label, .opcao-radio, .opcao-check { font-size: 11px; }
+    input, select, textarea { font-size: 11px; padding: 4px 8px; }
+    textarea, textarea.grande { min-height: 30px; }
+    .grid-form, .grid-2col { gap: 6px 12px; }
+    .grid-2col[style] { margin-top: 8px !important; }
+    .subbloco { padding: 6px 10px; }
     .subblocos-grid, .locacao-grid { break-inside: avoid; grid-template-columns: 1fr 1fr; }
     .subblocos-grid .full { grid-column: 1 / -1; }
     .grid-form .c3 { grid-column: span 3; }
@@ -1003,7 +1018,13 @@
       if (typeof window.print !== 'function') {
         throw new Error('print indisponível');
       }
-      window.print();
+      var metaVp = document.querySelector('meta[name="viewport"]');
+      var vpOriginal = metaVp ? metaVp.getAttribute('content') : null;
+      if (metaVp) metaVp.setAttribute('content', 'width=800');
+      setTimeout(function () {
+        window.print();
+        if (metaVp) setTimeout(function () { metaVp.setAttribute('content', vpOriginal); }, 4000);
+      }, 400);
     } catch (err) {
       mostrarToast('Não foi possível abrir a impressão. Abra o arquivo no navegador (Chrome/Safari).');
       document.getElementById('avisoNavegador').classList.add('visivel');
@@ -1034,5 +1055,18 @@
 })();
 </script>
 
+<script>
+(function () {
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (!meta) return;
+  var original = meta.getAttribute('content');
+  window.addEventListener('beforeprint', function () {
+    meta.setAttribute('content', 'width=800');
+  });
+  window.addEventListener('afterprint', function () {
+    meta.setAttribute('content', original);
+  });
+})();
+</script>
 </body>
 </html>
